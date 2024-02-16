@@ -7,7 +7,7 @@ client = OpenAI(
 )
 
 system_content = """
-Write car cover reviews in an informal, human-like style for eBay/Amazon. Include a title and content, avoid cliches. Highlight features like waterproofing, UV protection, tailored fit, high-quality materials (high-end polyester fabric, soft fleece fabric, non-scratch), durability, and protection against weather, temperature changes, keeps car dry, leaves,tree,bird,animal protection, and natural elements. Ensure the reviews are relatable and authentic.
+Write car cover reviews in an informal, human-like style for eBay/Amazon. Include a title and content, avoid cliches. Pick ONE of these features randomly to talk about PER review (waterproofing, UV protection, tailored fit, high-quality materials (high-end polyester fabric, soft fleece fabric, non-scratch), durability, and protection against weather, temperature changes, keeps car dry, leaves,tree,bird,animal protection, and natural elements). Ensure the reviews are relatable and authentic.
 
 Return all responses with Title: and Content:
 
@@ -29,7 +29,7 @@ Title: Great fit and seems very durable
 Content: Fits great and really covers car. Waterproof, and seems to be holding up, believe this will last longer than the budge covers sold in store by Walmart.
 Title: Best cover and outstanding customer service!Content: I have bought many covers for my Car, and this cover has been the best: fits well, proved to be waterproof, and easy to put on and secure. The only problem is it only lasted 7 months. However, 7 months in the harsh South Florida sun for the price is excellent! Also, when I contacted the company, I found out that I had an extended warranty. I provided a few pictures to show the material deteriorating, and the company sent me a new cover! The customer service was terrific! They were fast, polite and professional! I have already received a new cover, and I will continue to do business with them.
 Title: ThinContent: This seems more like 2 layers than 10 but it is waterproof and a good value. It fit my car very well and the buckle straps keep it in place. Recommended.
-Title: Coverland Premium Car Cover Waterproof All Weather for Buick Roadmaster 228" lengthContent: Likes: fits very well, including where the mirrors are; zipper to get into car is a handy feature; reflectors; straps for windproofing; color less likely to absorb heat; keeps car dry except... Dislike: leaks through at the seams. Almost brought it back but husband likes the other features, so he's going to try waterproof spray on the seams to help prevent leakage. Can't comment on durability after only one month
+Title: Coverland Car Cover" Content: Likes: fits very well, including where the mirrors are; zipper to get into car is a handy feature; reflectors; straps for windproofing; color less likely to absorb heat; keeps car dry except... Dislike: leaks through at the seams. Almost brought it back but husband likes the other features, so he's going to try waterproof spray on the seams to help prevent leakage. Can't comment on durability after only one month
 """
 def clean_stopwords(text: str) -> str:
     stopwords = ["a", "an", "and", "at", "but", "how", "in", "is", "on", "or", "the", "to", "what", "will"]
@@ -65,11 +65,11 @@ def generate_review(make, model, year):
     The title and content need to be related. You can have make and model and year in title ONCE. Otherwise have the title be related to the review
     Here are the make, model, year range.
     {make},{model},{year}
-    Give me 1 reviews where user didn't like the product in 50 words or less Add ('Helpful: 1, Rating: 2). ONLY to the title line. 
+    Give me 1 reviews where user didn't like the product from ONE of these topics: (pick from color fading from sun, took too long to put on without help, didn't like the material as much, little heavier than expected) in 50 words or less Add ('Helpful: 1, Rating: 2). ONLY to the title line. 
     2 reviews that are longer well written about their experience in 120 words or less. Add '(Helpful: 20, Rating: 5)'. ONLY to the title line.
     3 reviews that are skeptical but ended up loving the product in 50-120 words. Add '(Helpful: 15, Rating: 5)' ONLY to the title line.
-    1 where user bought for someone else and they loved it. Add '(Helpful: 10, Rating: 5)' ONLY to the title line.
-    1 to talk about their location (Florida, Louisiana, Texas, North Carolina, South Carolina, Alabama, Mississippi). Add '(Helpful: 5, Rating: 5)' ONLY to the title line.
+    1 where user bought for someone else OR for themselves and they loved it. Add '(Helpful: 10, Rating: 5)' ONLY to the title line.
+    1 to talk about their location. Pick ONE from this list (Florida, Louisiana, Texas, North Carolina, South Carolina, Alabama, Mississippi). Add '(Helpful: 5, Rating: 5)' ONLY to the title line.
     1 short perfect review in less than 25 words. Add (Helpful: 2, Rating: 5)  ONLY to the title line.
     1 short good review in less than 25 words. Add (Helpful: 1, Rating: 5) ONLY to the title line.
     """
@@ -99,8 +99,15 @@ def generate_review(make, model, year):
     # 'total_tokens:', completion.usage.total_tokens
     # )
     print(f'Finished Generating, writing report...{make},{model},{year}')
+    directory = f'reports/{make}'
 
-    with open(f'reports/{make}_{model}_{year}_reviews.txt', 'a') as file:
+    # Create the directory if it doesn't exist
+    os.makedirs(directory, exist_ok=True)
+
+    # Specify the file path
+    file_path = os.path.join(directory, f'{make}_{model}_{year}_reviews.txt')
+
+    with open(file_path, 'a') as file:
       file.write(completion.choices[0].message.content)
       file.write(f'\ncompletion_tokens: {completion.usage.completion_tokens}, ')
       file.write(f'prompt_tokens:, {completion.usage.prompt_tokens}, ')

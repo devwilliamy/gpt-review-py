@@ -59,6 +59,9 @@ def parse_reviews(review_string, make, model, year):
             reviews.append(review_obj)
         except ValueError:
             print(f"Error with this: {review_block}")
+            with open(f'reports/{make}/{make}_{model}_{year}_reviews.txt', 'a') as file:
+                file.write(f"{make},{model},{year}: Error with this: {review_block}")
+                
     return reviews
 
 parsed_reviews = parse_reviews(review_string, 'bmw', '3-series', '1997-2008')
