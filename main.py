@@ -10,11 +10,11 @@ ready_review_data_list = []
 # =======================
 # CHANGE THESE 
 # =======================
-to_count=30
+to_count=50
 # Remember this is NOT INCLUSIVE, so it'll be to this number - 1.
 # For example, if you do 0, 3, you'll only get 3 back [0,1,2]
-# So if you're doing 1-11, do 11-21 again etc
-from_count=41
+# So if you're doing 10-20, 21-30, you'd do (10,21) and then (21,31)
+from_count=61
 
 
 for i in range(to_count, from_count):
