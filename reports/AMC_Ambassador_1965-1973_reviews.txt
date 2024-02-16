@@ -1,0 +1,21 @@
+1. Title: Not as Waterproof as Expected, but Overall Okay (Helpful: 1, Rating: 2)
+   Content: I bought this car cover for my AMC Ambassador and was disappointed when it didn't hold up in heavy rain. Some water did get through the seams. However, it fits well and has adjustable straps to keep it in place. It also comes with a storage bag. Just be aware that it may not be completely waterproof.
+
+2. Title: Excellent Water Protection, Impressed with Purchase (Helpful: 20, Rating: 5)
+   Content: I have tried many car covers in the past, but this Coverland Premium car cover for my AMC Ambassador is the best. It is truly waterproof, as it has been through heavy rain and wind without any issues. It fits perfectly and is easy to remove and replace. I wish I had bought this cover years ago!
+
+3. Title: Great Fit and Durability, Impressed with Quality (Helpful: 20, Rating: 5)
+   Content: This car cover for my AMC Ambassador fits great and fully covers the car. It is waterproof and has stayed in place even during strong winds. The material seems very durable and I believe it will last longer than other covers I've tried in the past. It is definitely worth the investment.
+
+4. Title: Perfect Gift, Receiver Loved It (Helpful: 10, Rating: 5)
+   Content: I bought this car cover as a gift for someone with an AMC Ambassador. They absolutely loved it! It fits the car perfectly and provides excellent protection. They were impressed with the quality and how easy it was to put on and take off. Highly recommended!
+
+5. Title: Great Protection, Perfect for South Florida Weather (Helpful: 5, Rating: 5)
+   Content: I live in South Florida and needed a car cover that could withstand the harsh sun and occasional rain. This Coverland Premium car cover for my AMC Ambassador has been perfect. It keeps the car dry and provides excellent protection against the elements. Highly satisfied!
+
+6. Title: Fits Perfectly, Great Value (Helpful: 2, Rating: 5)
+   Content: This car cover for my AMC Ambassador fits perfectly and is a great value. It is waterproof and easy to install. Highly recommended!
+
+7. Title: Good Quality, Keeps Car Dry (Helpful: 1, Rating: 5)
+   Content: I bought this car cover for my AMC Ambassador and it is of good quality. It keeps my car dry and is easy to dry off after rain. Highly satisfied with this purchase.
+completion_tokens: 534, prompt_tokens:, 1364, total_tokens:, 1898

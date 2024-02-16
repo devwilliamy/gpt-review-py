@@ -1,0 +1,21 @@
+Title: Fits my AMC Rambler American perfectly! (Helpful: 1, Rating: 2)
+Content: I bought several car covers for my AMC Rambler American, and this one looked like the best option. It initially fit perfectly, but after heavy rain, some water got through the seams. It's not completely waterproof like I expected. The adjustable retaining straps and grommets for anti-theft cable are a great feature, but the instructions for the antenna grommet caused damage to my old antenna. Overall, I'm not completely satisfied with this cover.
+
+Title: Coverland Premium Car Cover is a good investment of protection! (Helpful: 20, Rating: 5)
+Content: After purchasing many car covers in the past, the Coverland Premium Car Cover truly lives up to its claims of excellent water protection. It withstood heavy winds without any concerns. I'm impressed and satisfied with this purchase. It's proven to be one of my best car cover investments over the years.
+
+Title: Great truck cover that is almost as good as a garage! (Helpful: 15, Rating: 5)
+Content: This truck cover is waterproof and easy to dry off after rain. It's the least expensive cover I've purchased and provides excellent protection. It fits great and the zipper entry for the driver's door is a fantastic feature. I wish I had bought one of these covers years ago.
+
+Title: Great fit and seems very durable! (Helpful: 15, Rating: 5)
+Content: This car cover fits great and really covers the car. It's waterproof and seems to be holding up well. I believe this cover will last longer than others I've purchased. The quality is excellent for the price.
+
+Title: Best cover with outstanding customer service! (Helpful: 10, Rating: 5)
+Content: I've bought many car covers for my car, but this Coverland Premium Car Cover has been the best. It fits well, proved to be waterproof, and was easy to put on and secure. The customer service was terrific when I had an issue, and they promptly sent me a new cover. I will continue to do business with them.
+
+Title: Thin but still a good value! (Helpful: 5, Rating: 4)
+Content: This cover seems more like layers than it is truly waterproof, but for the price, it's a good value. It fits my car very well and the buckle straps keep it in place. I did experience some leakage through the seams, but I plan to try a waterproof spray to help prevent it. Can't comment on durability yet after only one month.
+
+Title: AMC Rambler American cover fits well, but leaks through seams. (Helpful: 1, Rating: 2)
+Content: The Coverland car cover for my AMC Rambler American initially fit perfectly, but it didn't hold up well in heavy rain. Water seeped through the seams, which was disappointing. It does have some useful features like reflectors and windproofing straps, but the leakage issue outweighs the positives.
+completion_tokens: 636, prompt_tokens:, 1388, total_tokens:, 2024

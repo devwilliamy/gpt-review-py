@@ -1,0 +1,24 @@
+Title: Fits my AMC Spirit perfectly! (Helpful: 1, Rating: 2)
+Content: I bought this car cover for my AMC Spirit and was really disappointed. It was too small and didn't fit properly. The material also felt cheap and easily tore. I ended up returning it and finding a different brand.
+
+Title: Great quality and fit for my AMC Spirit! (Helpful: 20, Rating: 5)
+Content: I recently purchased the Coverland Premium Car Cover for my AMC Spirit and I couldn't be happier. The cover fits my car perfectly and provides great protection against the elements. It's made of high-quality material that feels durable and waterproof. I highly recommend this cover for any AMC Spirit owner.
+
+Title: Skeptical at first, but love it now! (Helpful: 15, Rating: 5)
+Content: I was hesitant to buy the Coverland Premium Car Cover for my AMC Spirit at first because I've had bad experiences with other covers in the past. However, I decided to give it a try and I'm so glad I did. This cover is excellent! It fits perfectly and has kept my car dry even in heavy rain. I'm very impressed and highly recommend it.
+
+Title: Bought it for a friend and they loved it! (Helpful: 10, Rating: 5)
+Content: I purchased the Coverland Premium Car Cover as a gift for my friend who owns an AMC Spirit and they absolutely love it. They mentioned how well it fits their car and how it provides excellent protection against the weather. They are very satisfied with this cover.
+
+Title: Perfect protection for my car in Florida! (Helpful: 5, Rating: 5)
+Content: Living in Florida, I needed a car cover that could withstand the intense heat and occasional storms. The Coverland Premium Car Cover has been perfect for my AMC Spirit. It keeps my car dry during rainstorms and protects it from the harsh sun. I'm very happy with this purchase.
+
+Title: Excellent car cover! (Helpful: 2, Rating: 5)
+Content: This car cover is perfect for my AMC Spirit. It fits well and provides great protection against the elements. Highly recommended!
+
+Title: Good quality cover! (Helpful: 1, Rating: 5)
+Content: I'm happy with the quality of this car cover. It fits my AMC Spirit well and does a good job protecting it.
+
+Title: Not impressed with this cover. (Helpful: 1, Rating: 2)
+Content: I was really disappointed with this car cover. It didn't fit my AMC Spirit properly and the material felt cheap. I ended up returning it and finding a better option.
+completion_tokens: 554, prompt_tokens:, 1386, total_tokens:, 1940
