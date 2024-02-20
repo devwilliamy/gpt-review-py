@@ -162,3 +162,7 @@ cython_debug/
 
 csv/
 reports/
+test_csv/
+to_combine_csv/
+combined_csv/
+notes/
