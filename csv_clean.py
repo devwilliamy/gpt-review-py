@@ -11,6 +11,27 @@ unique_make = set()
 for item in unique_make_model:
     unique_make.add(item['make'])
 
+file_name_2 = 'data/Distinct Make Model Parent Generation and Type.csv'
+type_lookup = {}
+def read_csv_2(file_name_path):
+    data = []  # To store the data 
+    with open(file_name_path, 'r', newline='') as file:
+        reader = csv.DictReader(file)
+        header_columns = next(reader)  # Read the header row
+        for row in reader:
+            # Create an object from the row
+            car_object = {
+                'make': row['\ufeff"make"'],
+                'model': row['model'],
+                'parent_generation': row['parent_generation'],
+                'type' : row['type']
+            }
+            type_lookup[(row['\ufeff"make"'], row['model'])] = row['type']
+            data.append(car_object)
+    return data
+unique_make_model_year_type = read_csv_2(file_name_2)
+
+
 # print(unique_make)
 
 # Will detect if there's a make in the sentence and detect if it doesn't match the make we're in
@@ -26,10 +47,18 @@ def clean_wrong_make(review, selected_make):
     return review
 
 # Sometimes (Helpful: ...) got left in. Remove it
+# Examples:
+# - Perfect Fit and Easy to Use (Helpful: 2, Rating: 5 --- this one should probably be nuked (the whole row) or make the title = the description cus description is missing the first letter 
+# - Helpful: 2, Rating: 5
+# - (Helpful: 2, Rating: 5 )
+# - Helpful: 1, Rating: 2)
+# - Note: Also need to have a cleaning for t: 
+# - Note : Need a cleaning for ( ex: Pontiac	Trans AM	1969-1981
+
 def clean_helpful_rating(review):
     if review is None:
         return
-    return re.sub(r'\(Helpful: \d+, Rating: \d\)', '', review).strip()
+    return clean_parenthesis(re.sub(r'\(?Helpful: \d+, Rating: \d\)?', '', review).strip())
 
 # ChatGPT returned stuff in bold. This really messed with the formatting so the data isn't good
 def clean_asterisks(s):
@@ -45,6 +74,11 @@ def clean_quotations(text):
     if text is None:
         return
     return re.sub(r'"', '', text).strip()
+
+def clean_parenthesis(text):
+    if text is None:
+        return
+    return re.sub(r'\)', '', text).strip()
     
 # Get rid of weird emojis 
 def clean_non_ascii(text):
@@ -82,11 +116,46 @@ def clean_truck(text):
         return ""
     return text
 
+# Remove waterproof all weather
+def clean_waterproof_all_weather(text):
+    return text.replace("Waterproof All Weather", "").replace("  ", " ")
+
+def clean_wrong_brand(text):
+    return text.replace("CoverMaster", "Coverland")\
+                .replace("CoverMasters", "Coverland")\
+                .replace("CoverTech", "Coverland")\
+                .replace("Covercraft", "Coverland")\
+                .replace("EliteGuard", "Coverland")\
+                .replace("LuxeShield", "Coverland")\
+                .replace("ShieldPro", "Coverland")\
+                .replace("ProShield", "Coverland")\
+                .replace("CarGuard", "Coverland")\
+                .replace("WeatherShield", "Coverland")\
+                .replace("ClassicGuard", "Coverland")\
+                .replace("WeatherGuard", "Coverland")\
+                .replace("All-Weather", "Coverland")\
+                .replace("CoverPlex", "Coverland")\
+                .replace("CoverShield Deluxe", "Coverland")\
+
+def clean_wrong_product_type_in_description(text, product_type):
+    if product_type == "SUV Covers":
+        replacement = "SUV"
+        return re.sub(r'\bcar\b', replacement, text, flags=re.IGNORECASE)
+    elif product_type == "Truck Covers":
+       replacement = "truck"
+       return re.sub(r'\bcar\b', replacement, text, flags=re.IGNORECASE)
+    else: 
+        return text
+
+
 # ====================
 # Main cleaning function for description / title
 # ====================
-def clean_text(text, selected_make):
-    return clean_content_from_title(
+def clean_text(text, selected_make, selected_type):
+    return clean_wrong_product_type_in_description(
+        clean_wrong_brand(
+        clean_waterproof_all_weather(
+        clean_content_from_title(
         clean_title_from_content(
         clean_non_ascii(    
         clean_quotations(
@@ -95,45 +164,45 @@ def clean_text(text, selected_make):
         clean_asterisks(
         clean_wrong_make(
         clean_truck(
-        check_title_pattern(text)), selected_make))))))))
+        check_title_pattern(text)), selected_make)))))))))), selected_type)
 
-# Particular function for the description title
-def clean_description(text, selected_make):
-    return clean_title_from_content(clean_non_ascii(clean_text(text, selected_make)))
+# # Particular function for the description title
+# def clean_text(text, selected_make):
+#     return clean_title_from_content(clean_non_ascii(clean_text(text, selected_make)))
     
 
-# Particular function for the title column
-def clean_title(text, selected_make):
-    return clean_content_from_title(clean_quotations(clean_text(text, selected_make)))
-
+# # Particular function for the title column
+# def clean_title(text, selected_make):
+#     return clean_content_from_title(clean_quotations(clean_text(text, selected_make)))
 
 def clean_csv(input_file, output_file):
     with open(input_file, mode='r') as infile, open(output_file, mode='w', newline='') as outfile:
         reader = csv.DictReader(infile)
-        fieldnames = reader.fieldnames
+        fieldnames = reader.fieldnames + ["type"]
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in reader:
             selected_make = row['make']
+            selected_type = type_lookup.get((row['make'], row['model']))
             cleaned_row = {
                 'make': row['make'],
                 'model':row['model'],
                 'parent_generation': row['parent_generation'] ,
-                'review_description': clean_description(row['review_description'], selected_make),	
+                'review_description': clean_text(row['review_description'], selected_make, selected_type),	
                 'rating_stars': row['rating_stars'],	
-                'review_title': clean_title(row['review_title'], selected_make),	
+                'review_title': clean_text(row['review_title'], selected_make, selected_type),	
                 'review_author': row['review_author'], 
                 'helpful': row['helpful'],
+                'type': selected_type
             }
             writer.writerow(cleaned_row)
     print(f"Finished cleaning {input_file} and outputted to {output_file}")
 
-
-clean_csv('combined_20240219.csv', 'combined_cleaned_20240219_1605.csv')
-
-
-
-
+# =============================
+# Change the file names down here
+# =============================
+    
+clean_csv('combined_csv/combined_cleaned_20240219_1816.csv', 'combined_csv/combined_cleaned_20240220_1132.csv')
 
 #=================
 # Testing the clean functions
@@ -163,3 +232,26 @@ review_7="""
 I was skeptical about buying this car cover, but it turned out to be a perfect fit for my Acura NSX. The high-quality material and tailored fit provide excellent protection against weather and temperature changes. It's easy to put on and secure with the adjustable straps. Definitely worth the investment!
 """
 # print(clean_wrong_make(review_7, 'Acura'))
+
+review_8="""
+I bought the Coverland Premium Car Cover Waterproof All Weather for my Shelby Cobra, but I wasn't impressed. After a heavy rain, water leaked through the seams. I almost returned it, but my husband likes the other features, so he's going to try a waterproof spray on the seams to prevent leakage. Can't comment on durability after only one month.
+"""
+# print(clean_waterproof_all_weather(review_8))
+
+
+# Examples
+# reviews = [
+#     "Perfect Fit and Quality Cover (Helpful: 2, Rating: 5",
+#     "Great product Helpful: 2, Rating: 5",
+#     "Excellent (Helpful: 2, Rating: 5 )",
+#     "Good value Helpful: 1, Rating: 2)"
+# ]
+
+# cleaned_reviews = [clean_helpful_rating(review) for review in reviews]
+# for cleaned_review in cleaned_reviews:
+#     print(cleaned_review)
+
+review_9 = """
+The Covercraft Car Cover for my Chevrolet Silverado 1500HD is top-notch. The material is durable, the fit is perfect, and it withstands heavy rain and wind admirably. I highly recommend it.
+"""
+# print(clean_wrong_product_type_in_description(review_9, "Truck Cover"))
