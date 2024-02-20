@@ -8,7 +8,7 @@ csv_files = os.listdir(directory_path)
 # csv_files = ['file1.csv', 'file2.csv', 'file3.csv']
 
 # Output combined CSV file
-output_file = 'combined_20240219.csv'
+output_file = 'combined_csv/combined_20240219_1816.csv'
 
 # Function to combine CSV files
 def combine_csv_files(input_files, output_file):
@@ -24,7 +24,7 @@ def combine_csv_files(input_files, output_file):
             with open(f'{directory_path}/{file}', 'r', newline='') as infile:
                 reader = csv.reader(infile)
                 # Skip the header in additional files
-                if file != input_files[0]:
+                if file != f'{directory_path}/{input_files[0]}':
                     next(reader)
                 for row in reader:
                     writer.writerow(row)
