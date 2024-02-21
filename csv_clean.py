@@ -1,3 +1,4 @@
+import random
 import csv_helper
 import re
 import csv
@@ -148,11 +149,43 @@ def clean_wrong_product_type_in_description(text, product_type):
         return text
 
 
+def randomly_delete(text, rating, base_probability=0.1, trigger_word="color", increased_probability=0.3):
+    
+    if int(rating) <= 2:
+        if trigger_word in text.lower():
+            # print("Color found")
+            probability = increased_probability
+        else:
+            probability = base_probability
+        
+        if random.random() < probability:
+            # print(f"Should have deleted: {text}")
+            text = ""
+    return text
+
+def randomly_set_helpful(helpful, description, title):
+    helpful = int(helpful)
+    if description == '' and title =='':
+        return 0
+    if helpful == 1:
+        return random.randint(5, 7)
+    elif helpful == 2: 
+        return random.randint(7, 10)
+    elif helpful == 5:
+        return random.randint(10, 15)
+    elif helpful == 10:
+        return random.randint(15, 20)
+    elif helpful == 15:
+        return random.randint(20, 25)
+    elif helpful == 20:
+        return random.randint(25,35)
+    else:
+        return 1
 # ====================
 # Main cleaning function for description / title
 # ====================
-def clean_text(text, selected_make, selected_type):
-    return clean_wrong_product_type_in_description(
+def clean_text(text, selected_make, selected_type, rating):
+    return randomly_delete(clean_wrong_product_type_in_description(
         clean_wrong_brand(
         clean_waterproof_all_weather(
         clean_content_from_title(
@@ -164,7 +197,7 @@ def clean_text(text, selected_make, selected_type):
         clean_asterisks(
         clean_wrong_make(
         clean_truck(
-        check_title_pattern(text)), selected_make)))))))))), selected_type)
+        check_title_pattern(text)), selected_make)))))))))), selected_type), rating)
 
 # # Particular function for the description title
 # def clean_text(text, selected_make):
@@ -184,15 +217,16 @@ def clean_csv(input_file, output_file):
         for row in reader:
             selected_make = row['make']
             selected_type = type_lookup.get((row['make'], row['model']))
+            selected_rating = row['rating_stars']
             cleaned_row = {
                 'make': row['make'],
                 'model':row['model'],
                 'parent_generation': row['parent_generation'] ,
-                'review_description': clean_text(row['review_description'], selected_make, selected_type),	
+                'review_description': clean_text(row['review_description'], selected_make, selected_type, selected_rating),	
                 'rating_stars': row['rating_stars'],	
-                'review_title': clean_text(row['review_title'], selected_make, selected_type),	
+                'review_title': clean_text(row['review_title'], selected_make, selected_type, selected_rating),	
                 'review_author': row['review_author'], 
-                'helpful': row['helpful'],
+                'helpful': randomly_set_helpful(row['helpful'], row['review_description'], row['review_title']),
                 'type': selected_type
             }
             writer.writerow(cleaned_row)
@@ -202,7 +236,7 @@ def clean_csv(input_file, output_file):
 # Change the file names down here
 # =============================
     
-clean_csv('combined_csv/combined_cleaned_20240219_1816.csv', 'combined_csv/combined_cleaned_20240220_1132.csv')
+clean_csv('combined_csv/combined_cleaned_20240219_1816.csv', 'combined_csv/combined_cleaned_20240220_1145.csv')
 
 #=================
 # Testing the clean functions
