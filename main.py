@@ -1,3 +1,4 @@
+import random 
 import csv_helper
 import review_generation
 import review_parser
@@ -29,9 +30,15 @@ if to_count is None or from_count is None:
 to_count = int(to_count)
 from_count = int(from_count)
 print(f"TO_COUNT: {to_count}, FROM_COUNT: {from_count}")
+skipped_times = 0
 for i in range(to_count, from_count):
 # for i in range(0, 1):
     # try: 
+    
+    if random.random() <= 0.75:
+        skipped_times += 1
+        # print(f"Skip Count: {skipped_times}")
+        continue
     make = csv_data[i]["make"]
     model = csv_data[i]["model"]
     year = csv_data[i]["parent_generation"]
@@ -41,12 +48,20 @@ for i in range(to_count, from_count):
     # except:
     #     print(f"Error at index: {i}")
     
+print(f"Skip Count: {skipped_times}")
 
 
 
 
 
+directory = f'csv_02212024_1408'
+
+# Create the directory if it doesn't exist
+os.makedirs(directory, exist_ok=True)
+
+# Specify the file path
+file_path = os.path.join(directory, f'{make}_{model}_{year}_reviews.txt')
 
 field_names = ['make', 'model', 'parent_generation', 'review_description', 'rating_stars', 'review_title', 'review_author', 'helpful']
 
-csv_helper.write_csv(f'csv/reviews_{to_count}_{from_count}.csv', field_names, ready_review_data_list)
+csv_helper.write_csv(f'{directory}/reviews_{to_count}_{from_count}.csv', field_names, ready_review_data_list)

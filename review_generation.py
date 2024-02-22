@@ -1,3 +1,4 @@
+import random_utils
 from openai import OpenAI
 import os
 import re
@@ -158,6 +159,16 @@ Title: Good quality
 Content: Item quality seems pretty good. This is the first time I'm using this product, we will see how this cover holds up in our island weather which includes, high UV sunlight, heavy rains, and high winds. I'll rate this again after a couple months of our weather
 """
 
+system_content_critical = f"""
+Write car cover reviews in an informal, human-like style for eBay/Amazon. Include a title and content, avoid cliches. Sometimes, pick ONE of these features RANDOMLY to talk about PER review (waterproofing, UV protection, tailored fit, high-quality materials (high-end polyester fabric, soft fleece fabric, non-scratch), durability, and protection against weather, temperature changes, keeps car dry, leaves,tree,bird,animal protection, and natural elements). Ensure the reviews are relatable and authentic.
+
+IMPORTANT: Return all responses with Title: and Content: format. Do NOT bold or italicize anything.
+
+Here are some example reviews:
+Title: Fits my Car perfectly
+Content: I looked at several car covers for my Car, and this one looked like the best. It fits perfectly (make sure you use the sizing chart when ordering). However, I learned its not completely waterproof in a heavy rain. Shortly after putting it my Car, we had a severe thunderstorm, and some water did get through, probably through a seam. But Ive found no car covers are completely waterproof, so I guess it should be expected. This particular cover has adjustable retaining straps front and back, comes with an extra strap for the mid-body to secure the cover under the vehicle and grommets for an anti-theft cable or a bungee cord to keep the cover firmly in place. It also comes with an antenna grommet you can add, and a large nylon drawstring storage bag. One word of caution— I followed the instructions for installing the cover, which state that its not necessary to use the antenna grommet if you have a “flexible” antenna. Well, that didnt work out well, because when I removed the cover, which is heavy, my rubber flex antenna was bent and cracked in several places— in retrospect, my car is 15 years old, and the rubber antenna was original equipment, so the rubber was weathered and hardened. But be aware you might want to remove any detachable antennas before using this cover (a replacement antenna cost me $23 on Amazon). Other than that, Im happy with this cover, its well made, easy to install, and stayed on the car in 30MPH winds and heavy rain.
+Title: Good quality Good fit
+"""
 # In order to use stopwords, have to open Python interpreter
 # import nltk
 # nltk.download('stopwords')
@@ -184,19 +195,24 @@ def clean_text(text):
 
     return text
 print(os.environ.get("OPENAI_API_KEY"))
-new_system_content = clean_stopwords(system_content)
+
+# new_system_content = clean_stopwords(system_content)
+new_system_content = clean_stopwords(system_content_critical)
 new_system_content_2 = clean_text(new_system_content)
 # print(new_string_2)
 # print(len(new_string_2))
-
-
 # print(new_user_prompt_2)
+
+
 review_count = 0
 def generate_review(make, model, year):
     global review_count
     print(f"Review Count: {review_count}")
     review_count += 1
-    user_prompt=f"""
+    random_word_count = random_utils.generate_random_word_count(10, 25)
+    topic = random_utils.generate_random_topic()
+    tone = random_utils.generate_random_tonality()
+    user_prompt_original=f"""
     Give me 10 reviews total. Create your own but also use the reviews as inspiration. Don't just repeat the provided reviews, have your own spin on it.
     The title and content need to be related. You can have make and model and year in title or content ONCE. Otherwise have the title be related to the review
     Here are the make, model, year range.
@@ -209,16 +225,21 @@ def generate_review(make, model, year):
     4 short good review in less than 25 words. Add (Helpful: 1, Rating: 5) ONLY to the title line.
     IMPORTANT: Return all responses with Title: and Content: format. Do NOT bold or italicize anything. Only include make/model in ONE of the title or content ONCE. 
     """
-        # 1 where user bought for someone else OR for themselves and they loved it OR to talk about their location (Randomly Pick ONE from this list (Florida, Louisiana, Texas, North Carolina, South Carolina, Alabama, Mississippi) OR sometimes rnadomly pick another US State). Add '(Helpful: 10, Rating: 5)' ONLY to the title line OR
-    new_user_prompt = clean_stopwords(user_prompt)
-    new_user_prompt_2 = clean_text(new_user_prompt)
+    user_prompt_critical=f"""
+    Give me a {random_word_count} word review where user sort of didn't like the product. Title and content need to be related. 
+    Talk about this: {topic} in a {tone} tone.
+    """
+    # 1 where user bought for someone else OR for themselves and they loved it OR to talk about their location (Randomly Pick ONE from this list (Florida, Louisiana, Texas, North Carolina, South Carolina, Alabama, Mississippi) OR sometimes rnadomly pick another US State). Add '(Helpful: 10, Rating: 5)' ONLY to the title line OR
+    # new_user_prompt = clean_stopwords(user_prompt)
+    # new_user_prompt_2 = clean_text(new_user_prompt)
     print(f'Generating...{make},{model},{year}')
+    print(f'Random Options: {random_word_count}, {topic}, {tone}')
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
     # model="gpt-3.5-turbo-0125",
     messages=[
         {"role": "system", "content": new_system_content_2},
-        {"role": "user", "content": user_prompt}
+        {"role": "user", "content": user_prompt_critical}
     ]
     )
     # print(completion.choices[0].message.content)   
@@ -228,7 +249,7 @@ def generate_review(make, model, year):
     # 'total_tokens:', completion.usage.total_tokens
     # )
     print(f'Finished Generating, writing report...{make},{model},{year}')
-    directory = f'reports/{make}'
+    directory = f'reports_02212024_1408/{make}'
 
     # Create the directory if it doesn't exist
     os.makedirs(directory, exist_ok=True)
@@ -238,10 +259,11 @@ def generate_review(make, model, year):
 
     with open(file_path, 'a') as file:
       file.write(completion.choices[0].message.content)
+      file.write(f'Random Options: {random_word_count}, {topic}, {tone}')
       file.write(f'\ncompletion_tokens: {completion.usage.completion_tokens}, ')
       file.write(f'prompt_tokens:, {completion.usage.prompt_tokens}, ')
       file.write(f'total_tokens:, {completion.usage.total_tokens}\n')
-    with open(f'reports/token_tracker.txt', 'a') as file:
+    with open(f'reports_02212024_1408/token_tracker.txt', 'a') as file:
       file.write(f'{make}_{model}_{year}_reviews')
       file.write(f'\ncompletion_tokens: {completion.usage.completion_tokens}, ')
       file.write(f'prompt_tokens:, {completion.usage.prompt_tokens}, ')

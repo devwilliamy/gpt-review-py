@@ -40,20 +40,27 @@ def clean_string(text):
 
 def parse_reviews(review_string, make, model, year):
     reviews = []
+    # review_list = review_string.split('\n\n|\n  \n|\n \n')
     review_list = review_string.split('\n\n')
-    for review_block in review_list:
+    if (len(review_list) == 2 and review_list[0].startswith("Title: ") and review_list[1].startswith("Content: ")):
         try:
-            title_start = review_block.find('Title: ') + len('Title: ')
-            helpful_start = review_block.find('Helpful: ') + len('Helpful: ')
-            rating_start = review_block.find('Rating: ') + len('Rating: ')
-            content_start = review_block.find('Content: ') + len('Content: ')
-            title_end = review_block.find('Content', title_start)
-            title = clean_string(review_block[title_start:title_end].strip())
-            content = clean_string(review_block[content_start:])
-            helpful_end = review_block.find(',', helpful_start)
-            helpful = int(review_block[helpful_start:helpful_end])
-            rating_end = review_block.find(')', rating_start)
-            rating = int(review_block[rating_start:rating_end])
+            title_start = review_list[0].find('Title: ') + len('Title: ')
+            content_start = review_list[1].find('Content: ') + len('Content: ')
+            
+            title = clean_string(review_list[0][title_start:].strip())
+            content = clean_string(review_list[1][content_start:])
+            helpful_start = review_list[0].find('Helpful: ') + len('Helpful: ')
+            rating_start = review_list[0].find('Rating: ') + len('Rating: ')
+            try:
+                helpful_end = review_list[0].find(',', helpful_start)
+                helpful = int(review_list[0][helpful_start:helpful_end])
+            except ValueError:
+                helpful = 0
+            try:
+                rating_end = review_list[0].find(')', rating_start)
+                rating = int(review_list[0][rating_start:rating_end])
+            except ValueError:
+                rating = 0
             review_obj = {
                 'make': make,
                 'model': model,
@@ -67,14 +74,51 @@ def parse_reviews(review_string, make, model, year):
             reviews.append(review_obj)
         except ValueError:
             print(f"Error with this: {review_block}")
-            with open(f'reports/{make}/{make}_{model}_{year}_reviews.txt', 'a') as file:
+            with open(f'reports_02212024_1408/{make}/{make}_{model}_{year}_reviews.txt', 'a') as file:
                 file.write(f"{make},{model},{year}: Error with this: {review_block}")
-            with open(f'reports/Error_reviews.txt', 'a') as file:
+            with open(f'reports_02212024_1408/Error_reviews.txt', 'a') as file:
                 file.write(f"{make},{model},{year}: Error with this: {review_block}")
+    else:
+        for review_block in review_list:
+            try:
+                title_start = review_block.find('Title: ') + len('Title: ')
+                content_start = review_block.find('Content: ') + len('Content: ')
+                title_end = review_block.find('Content', title_start)
+                title = clean_string(review_block[title_start:title_end].strip())
+                content = clean_string(review_block[content_start:])
+                helpful_start = review_block.find('Helpful: ') + len('Helpful: ')
+                rating_start = review_block.find('Rating: ') + len('Rating: ')
+                try:
+                    helpful_end = review_block.find(',', helpful_start)
+                    helpful = int(review_block[helpful_start:helpful_end])
+                except ValueError:
+                    helpful = 0
+                try:
+                    rating_end = review_block.find(')', rating_start)
+                    rating = int(review_block[rating_start:rating_end])
+                except ValueError:
+                    rating = 0
+                review_obj = {
+                    'make': make,
+                    'model': model,
+                    'parent_generation':year,
+                    'review_description': content,
+                    'rating_stars': rating,
+                    'review_title': title,
+                    'review_author': generate_names.generate_name(),
+                    'helpful': helpful,
+                }
+                reviews.append(review_obj)
+            except ValueError:
+                print(f"Error with this: {review_block}")
+                with open(f'reports_02212024_1408/{make}/{make}_{model}_{year}_reviews.txt', 'a') as file:
+                    file.write(f"{make},{model},{year}: Error with this: {review_block}")
+                with open(f'reports_02212024_1408/Error_reviews.txt', 'a') as file:
+                    file.write(f"{make},{model},{year}: Error with this: {review_block}")
                 
     return reviews
 
-parsed_reviews = parse_reviews(review_string, 'bmw', '3-series', '1997-2008')
+# parsed_reviews = parse_reviews(review_string, 'bmw', '3-series', '1997-2008')
 
 # print(parsed_reviews[:3])
 

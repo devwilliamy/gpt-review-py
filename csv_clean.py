@@ -195,9 +195,10 @@ def clean_text(text, selected_make, selected_type, rating):
         clean_words_pattern(
         clean_helpful_rating(
         clean_asterisks(
-        clean_wrong_make(
+        # clean_wrong_make(
         clean_truck(
-        check_title_pattern(text)), selected_make)))))))))), selected_type), rating)
+        check_title_pattern(text)), #selected_make
+        ))))))))), selected_type), rating)
 
 # # Particular function for the description title
 # def clean_text(text, selected_make):
@@ -236,7 +237,7 @@ def clean_csv(input_file, output_file):
 # Change the file names down here
 # =============================
     
-clean_csv('combined_csv/combined_cleaned_20240219_1816.csv', 'combined_csv/combined_cleaned_20240220_1145.csv')
+clean_csv('combined_csv_02212024_1408/combined_02212024_1408.csv', 'combined_csv_02212024_1408/combined__cleaned_02212024_1408.csv')
 
 #=================
 # Testing the clean functions
@@ -289,3 +290,8 @@ review_9 = """
 The Covercraft Car Cover for my Chevrolet Silverado 1500HD is top-notch. The material is durable, the fit is perfect, and it withstands heavy rain and wind admirably. I highly recommend it.
 """
 # print(clean_wrong_product_type_in_description(review_9, "Truck Cover"))
+
+review_10 = """
+So, I got this car cover, right? Looks good and all, but when I tried to put it on, man, it was a headache. The installation instructions were kinda vague, and I had to figure things out on my own. Definitely not user-friendly for newbies like me. So, if you're a first-timer, be prepared to do some trial and error.
+"""
+# print(clean_text(review_10, "AMC", "Car Covers", 0))
