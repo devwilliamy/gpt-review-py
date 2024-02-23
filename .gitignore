@@ -160,10 +160,12 @@ cython_debug/
 #.idea/
 
 
-csv/
-reports/
-test_csv/
-to_combine_csv/
-combined_csv/
+csv*/
+reports*/
+test_csv*/
+to_combine_csv*/
+combined_csv*/
 notes/
 old_csv/
+fix_help_count*/
+

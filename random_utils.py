@@ -45,12 +45,69 @@ tonalities = [
 "Honest and Direct",
 "Reflective and Thoughtful",
 ]
+
+good_topics = [
+    "Waterproof/Water-Resistant",
+"Durability and Longevity",
+"Fit and Sizing",
+"Ease of Installation and Use",
+"Wind Resistance",
+"UV Protection",
+"Price and Value",
+"Material Quality",
+"Mirror Pockets",
+"Zipper Entry",
+"Strap Strength and Quality",
+"Fasteners and Buckles",
+"Reflective Features",
+"Storage Bag",
+"Customer Service",
+"Warranty",
+"Color and Heat Absorption",
+"Maintenance and Cleaning",
+"Snow and Ice Protection",
+"Protection from Sap and Twigs",
+"Protection from Dust and Dirt",
+"Indoor vs. Outdoor Use",
+"Shipping Speed",
+"Just say it was okay",
+"Just say you liked it",
+"Just say it's a really great product"
+
+]
+
+level_of_liking = [
+    "really liked the product",
+    "liked the product",
+    "product was okay",
+    "product was not bad",
+    "product was enjoyable",
+    "product fits the bill"
+]
+
+
 def generate_random_topic():
     return random.choice(critical_topics)
 
 def generate_random_tonality():
     return random.choice(tonalities)
 
-# print(generate_random_word_count(10, 20))
+def generate_random_good_topic():
+    return random.choice(good_topics)
+
+def generate_random_level_of_liking():
+    return random.choice(level_of_liking)
+
+def random_mentions():
+    if random.random() < 0.05:
+        return "Mention the make"
+    if random.random() < 0.05:
+        return "Mention the model"
+    if random.random() < 0.05:
+        return "Mention the make and model"
+    if random.random() < 0.05:
+        return "Mention the make and model and a year from the year range"
+    return "Don't mention make model or year"
+# print(generate_random_word_count(10, 10))
 # print(generate_random_topic())
 # print(generate_random_tonality())

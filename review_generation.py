@@ -159,6 +159,11 @@ Title: Good quality
 Content: Item quality seems pretty good. This is the first time I'm using this product, we will see how this cover holds up in our island weather which includes, high UV sunlight, heavy rains, and high winds. I'll rate this again after a couple months of our weather
 """
 
+system_content_good = f"""
+Write car cover reviews in an informal, human-like style for eBay/Amazon. Include a title and content, avoid cliches. Sometimes, pick ONE of these features RANDOMLY to talk about PER review (waterproofing, UV protection, tailored fit, high-quality materials (high-end polyester fabric, soft fleece fabric, non-scratch), durability, and protection against weather, temperature changes, keeps car dry, leaves,tree,bird,animal protection, and natural elements). Ensure the reviews are relatable and authentic.
+
+IMPORTANT: Return all responses with Title: and Content: format. Do NOT bold or italicize anything.
+"""
 system_content_critical = f"""
 Write car cover reviews in an informal, human-like style for eBay/Amazon. Include a title and content, avoid cliches. Sometimes, pick ONE of these features RANDOMLY to talk about PER review (waterproofing, UV protection, tailored fit, high-quality materials (high-end polyester fabric, soft fleece fabric, non-scratch), durability, and protection against weather, temperature changes, keeps car dry, leaves,tree,bird,animal protection, and natural elements). Ensure the reviews are relatable and authentic.
 
@@ -197,7 +202,7 @@ def clean_text(text):
 print(os.environ.get("OPENAI_API_KEY"))
 
 # new_system_content = clean_stopwords(system_content)
-new_system_content = clean_stopwords(system_content_critical)
+new_system_content = clean_stopwords(system_content)
 new_system_content_2 = clean_text(new_system_content)
 # print(new_string_2)
 # print(len(new_string_2))
@@ -209,15 +214,27 @@ def generate_review(make, model, year):
     global review_count
     print(f"Review Count: {review_count}")
     review_count += 1
-    random_word_count = random_utils.generate_random_word_count(10, 25)
+    random_word_count = random_utils.generate_random_word_count(10, 50)
     topic = random_utils.generate_random_topic()
+    good_topic = random_utils.generate_random_good_topic()
     tone = random_utils.generate_random_tonality()
+    level_of_liking = random_utils.generate_random_level_of_liking()
     user_prompt_original=f"""
     Give me 10 reviews total. Create your own but also use the reviews as inspiration. Don't just repeat the provided reviews, have your own spin on it.
-    The title and content need to be related. You can have make and model and year in title or content ONCE. Otherwise have the title be related to the review
-    Here are the make, model, year range.
-    {make},{model},{year}
-    Give me 1 reviews where user sort of didn't like the product from ONE of these topics: (pick from color fading from sun, took too long to put on without help, didn't like the material as much, little heavier than expected) in 50 words or less Add ('Helpful: 1, Rating: 2). ONLY to the title line. Do not be too critical
+    The title and content need to be related. Randomly choose to have make and model in title or content (10% of the time). Otherwise have the title be related to the review
+    Here are the make, model.
+    {make},{model}
+    Use a different tone for each review provided (
+    "Positive and Enthusiastic",
+    "Professional and Detailed",
+    "Casual and Friendly",
+    "Skeptical but Fair",
+    "Humorous and Light-hearted",
+    "Critical but Constructive",
+    "Formal and Reserved",
+    "Informal and Conversational",
+    "Honest and Direct",
+    "Reflective and Thoughtful")
     2 reviews that are longer well written about their experience in 120 words or less. Add '(Helpful: 20, Rating: 5)'. ONLY to the title line.
     1 reviews that are skeptical but ended up loving the product in 50-120 words. Add '(Helpful: 15, Rating: 5)' ONLY to the title line.
 
@@ -229,7 +246,17 @@ def generate_review(make, model, year):
     Give me a {random_word_count} word review where user sort of didn't like the product. Title and content need to be related. 
     Talk about this: {topic} in a {tone} tone.
     """
+    user_prompt_good = f"""
+    Give me a {random_word_count} word review where user felt like: {level_of_liking}. Title and content need to be related. 
+    Talk about this: {good_topic} in a {tone} tone.
+    Here's the make, model, year range: {make} {model} {year}
+    {random_utils.random_mentions()} 
+    """
+    ###### Old reviews
+    # Give me 1 reviews where user sort of didn't like the product from ONE of these topics: (pick from color fading from sun, took too long to put on without help, didn't like the material as much, little heavier than expected) in 50 words or less Add ('Helpful: 1, Rating: 2). ONLY to the title line. Do not be too critical
     # 1 where user bought for someone else OR for themselves and they loved it OR to talk about their location (Randomly Pick ONE from this list (Florida, Louisiana, Texas, North Carolina, South Carolina, Alabama, Mississippi) OR sometimes rnadomly pick another US State). Add '(Helpful: 10, Rating: 5)' ONLY to the title line OR
+    ######
+
     # new_user_prompt = clean_stopwords(user_prompt)
     # new_user_prompt_2 = clean_text(new_user_prompt)
     print(f'Generating...{make},{model},{year}')
@@ -238,8 +265,8 @@ def generate_review(make, model, year):
     model="gpt-3.5-turbo",
     # model="gpt-3.5-turbo-0125",
     messages=[
-        {"role": "system", "content": new_system_content_2},
-        {"role": "user", "content": user_prompt_critical}
+        {"role": "system", "content": system_content_good},
+        {"role": "user", "content": user_prompt_good}
     ]
     )
     # print(completion.choices[0].message.content)   
@@ -249,7 +276,7 @@ def generate_review(make, model, year):
     # 'total_tokens:', completion.usage.total_tokens
     # )
     print(f'Finished Generating, writing report...{make},{model},{year}')
-    directory = f'reports_02212024_1408/{make}'
+    directory = f'reports_20240222_1353/{make}'
 
     # Create the directory if it doesn't exist
     os.makedirs(directory, exist_ok=True)
@@ -263,7 +290,7 @@ def generate_review(make, model, year):
       file.write(f'\ncompletion_tokens: {completion.usage.completion_tokens}, ')
       file.write(f'prompt_tokens:, {completion.usage.prompt_tokens}, ')
       file.write(f'total_tokens:, {completion.usage.total_tokens}\n')
-    with open(f'reports_02212024_1408/token_tracker.txt', 'a') as file:
+    with open(f'reports_20240222_1353/token_tracker.txt', 'a') as file:
       file.write(f'{make}_{model}_{year}_reviews')
       file.write(f'\ncompletion_tokens: {completion.usage.completion_tokens}, ')
       file.write(f'prompt_tokens:, {completion.usage.prompt_tokens}, ')

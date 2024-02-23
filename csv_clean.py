@@ -2,17 +2,24 @@ import random
 import csv_helper
 import re
 import csv
+import os
+
+distinct_make_model_parent_file=os.environ.get("IN_DISTINCT_MAKE_MODEL_PARENT_GENERATION_CSV")
+distinct_make_model_parent_type_file=os.environ.get("IN_DISTINCT_MAKE_MODEL_PARENT_GENERATION_TYPE_CSV")
+if distinct_make_model_parent_file is None or distinct_make_model_parent_type_file is None:
+    print("Error: IN_DISTINCT_MAKE_MODEL_PARENT_GENERATION_CSV or IN_DISTINCT_MAKE_MODEL_PARENT_GENERATION_TYPE_CSV environment variables are not set.")
+    exit(1)
+
 # This script is to take a CSV and clean it
 
 # Read in the distinct make and model, store that data in an array
-file_name='data/Distinct Make, Model, and Parent Generation.csv'
-unique_make_model = csv_helper.read_csv(file_name)
+distinct_make_model_parent_file='data/Distinct Make, Model, and Parent Generation.csv'
+unique_make_model = csv_helper.read_csv(distinct_make_model_parent_file)
 
 unique_make = set()
 for item in unique_make_model:
     unique_make.add(item['make'])
 
-file_name_2 = 'data/Distinct Make Model Parent Generation and Type.csv'
 type_lookup = {}
 def read_csv_2(file_name_path):
     data = []  # To store the data 
@@ -30,7 +37,7 @@ def read_csv_2(file_name_path):
             type_lookup[(row['\ufeff"make"'], row['model'])] = row['type']
             data.append(car_object)
     return data
-unique_make_model_year_type = read_csv_2(file_name_2)
+unique_make_model_year_type = read_csv_2(distinct_make_model_parent_type_file)
 
 
 # print(unique_make)
@@ -236,8 +243,14 @@ def clean_csv(input_file, output_file):
 # =============================
 # Change the file names down here
 # =============================
-    
-clean_csv('combined_csv_02212024_1408/combined_02212024_1408.csv', 'combined_csv_02212024_1408/combined__cleaned_02212024_1408.csv')
+
+input_to_clean_csv=os.environ.get("IN_TO_CLEAN_CSV")
+output_cleaned_csv=os.environ.get("OUT_CLEANED_CSV")
+if distinct_make_model_parent_file is None or distinct_make_model_parent_type_file is None:
+    print("Error: IN_TO_CLEAN_CSV or OUT_CLEANED_CSV environment variables are not set.")
+    exit(1)
+
+clean_csv(input_to_clean_csv, output_cleaned_csv)
 
 #=================
 # Testing the clean functions

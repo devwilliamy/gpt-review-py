@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 # Read in the distinct make and model, store that data in an array
-file_name='data/Distinct Make, Model, and Parent Generation.csv'
+file_name='data/Remaining Distinct Make Model and Parent Generation and Type.csv'
 csv_data = csv_helper.read_csv(file_name)
 # print(csv_data[:3])
 load_dotenv()
@@ -35,17 +35,18 @@ for i in range(to_count, from_count):
 # for i in range(0, 1):
     # try: 
     
-    if random.random() <= 0.75:
-        skipped_times += 1
-        # print(f"Skip Count: {skipped_times}")
-        continue
-    make = csv_data[i]["make"]
-    model = csv_data[i]["model"]
-    year = csv_data[i]["parent_generation"]
-    generated_reviews = review_generation.generate_review(make, model, year)
-    parsed_reviews = review_parser.parse_reviews(generated_reviews, make, model, year)
-    ready_review_data_list.extend(parsed_reviews)
-    # except:
+    # if random.random() <= 0.75:
+    #     skipped_times += 1
+    #     # print(f"Skip Count: {skipped_times}")
+    #     continue
+    for m in range(0, 11):
+        make = csv_data[i]["make"]
+        model = csv_data[i]["model"]
+        year = csv_data[i]["parent_generation"]
+        generated_reviews = review_generation.generate_review(make, model, year)
+        parsed_reviews = review_parser.parse_reviews(generated_reviews, make, model, year)
+        ready_review_data_list.extend(parsed_reviews)
+        # except:
     #     print(f"Error at index: {i}")
     
 print(f"Skip Count: {skipped_times}")
@@ -54,7 +55,7 @@ print(f"Skip Count: {skipped_times}")
 
 
 
-directory = f'csv_02212024_1408'
+directory = f'csv_20240222_1353'
 
 # Create the directory if it doesn't exist
 os.makedirs(directory, exist_ok=True)

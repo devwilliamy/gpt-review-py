@@ -1,13 +1,5 @@
 import csv
-import json
 import os
-# data = [
-#     {'make': 'Toyota', 'model': 'Camry', 'parent_generation': '1991-2008', 'review_description': 'Great car', 'rating_stars': 5, 'review_title': 'Excellent', 'review_author': 'John Doe', 'helpful': True},
-#     {'make': 'Honda', 'model': 'Accord', 'parent_generation': '2008-2012', 'review_description': 'Reliable', 'rating_stars': 4, 'review_title': 'Good car', 'review_author': 'Jane Smith', 'helpful': False}
-# ]
-
-# Specify the CSV file path
-file_name_path = 'csv/reviews_test.csv'
 
 # Define the field names (column names)
 field_names = ['make', 'model', 'parent_generation', 'review_description', 'rating_stars', 'review_title', 'review_author', 'helpful']
@@ -33,10 +25,6 @@ def write_csv(file_name_path, field_names, data):
         print(f"Could not write to '{file_name_path}'. Writing to '{new_file_name}' instead.")
         write_csv(new_file_name, field_names, data)
 
-# Test write_csv
-# write_csv(file_name_path, field_names, data)
-        
-
 def read_csv(file_name_path):
     data = []  # To store the data 
     with open(file_name_path, 'r', newline='') as file:
@@ -45,12 +33,10 @@ def read_csv(file_name_path):
         for row in reader:
             # Create an object from the row
             car_object = {
-                'make': row['\ufeff"make"'],
+                # 'make': row['\ufeff"make"'],
+                'make': row['make'],
                 'model': row['model'],
                 'parent_generation': row['parent_generation']
             }
             data.append(car_object)
     return data
-
-# Test read_csv
-# read_csv()
