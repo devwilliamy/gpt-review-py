@@ -2,13 +2,13 @@ import csv
 import os
 
 # List of CSV files to combine
-directory_path = 'csv_02212024_1408'
+directory_path = 'csv_20240222_1353'
 csv_files = os.listdir(directory_path)
 
 # csv_files = ['file1.csv', 'file2.csv', 'file3.csv']
 
 # Output combined CSV file
-output_file = 'combined_csv_02212024_1408/combined_02212024_1408.csv'
+output_file = 'combined_csv_20240226_1057/combined_20240226_1057.csv'
 
 # Function to combine CSV files
 def combine_csv_files(input_files, output_file):

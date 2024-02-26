@@ -51,7 +51,7 @@ for i in range(to_count, from_count):
     
 print(f"Skip Count: {skipped_times}")
 
-
+# TODO: Add a try  catch and sod that if it does error out, to write a CSV immediately
 
 
 

@@ -49,10 +49,10 @@ truck_cover_photos = [
 'http://coverland.com/review/truck_review_012_01.webp,http://coverland.com/review/truck_review_012_02.webp,http://coverland.com/review/truck_review_012_03.webp,http://coverland.com/review/',
 'http://coverland.com/review/truck_review_005_01.webp,http://coverland.com/review/truck_review_005_02.webp,http://coverland.com/review/truck_review_005_03.webp,http://coverland.com/review/',
 ]
-file_name='data/new_id_helpful_count_20240221.csv'
+file_name='data/new_id_helpful_count_20240226_1200.csv'
 # csv_data = csv_helper.read_csv(file_name)
 
-file_name2='data/Type Helpful Count Distinct 20240222_1305.csv'
+file_name2='data/Type Helpful Count Distinct 20240226_1201.csv'
 # csv_data2= csv_helper.read_csv(file_name2)
 assigned_car_photo_index = 0
 assigned_suv_photo_index = 0
@@ -64,7 +64,7 @@ def randomly_assign_photo(helpful, type):
     car_photo_length = len(car_cover_photos)
     suv_photo_length = len(suv_cover_photos)
     truck_photo_length = len(truck_cover_photos)
-    if int(helpful) >= 5:
+    if int(helpful) >= 10:
         if type == 'Car Covers':
             photo_to_assign = car_cover_photos[assigned_car_photo_index]
             assigned_car_photo_index+=1
@@ -109,7 +109,8 @@ def fix_helpful():
             helpful = row['helpful']
             count = type_lookup[(type, helpful)]
             new_data = {
-                'id': row['id'],
+                # 'id': row['id'],
+                'id': row['\ufeff"id"'],
                 'type': row['type'],
                 'helpful': determine_helpful(helpful, count),
                 'review_image': randomly_assign_photo(helpful, type)
@@ -121,7 +122,7 @@ def fix_helpful():
 
 fieldnames=["id","type","helpful", "review_image"]
 new_data = fix_helpful()
-with open('fix_helpful_count/new_id_helpful_count_20240222_1307.csv', mode='w', newline='') as outfile:
+with open('fix_helpful_count/new_id_helpful_count_20240226_1202.csv', mode='w', newline='') as outfile:
     writer = csv.DictWriter(outfile, fieldnames=fieldnames)
     writer.writeheader()
     for row in new_data:

@@ -13,7 +13,9 @@ if distinct_make_model_parent_file is None or distinct_make_model_parent_type_fi
 # This script is to take a CSV and clean it
 
 # Read in the distinct make and model, store that data in an array
-distinct_make_model_parent_file='data/Distinct Make, Model, and Parent Generation.csv'
+# distinct_make_model_parent_file='data/Distinct Make, Model, and Parent Generation.csv'
+# unique_make_model = csv_helper.read_csv(distinct_make_model_parent_file)
+distinct_make_model_parent_file='data/Remaining Distinct Make Model and Parent Generation and Type.csv'
 unique_make_model = csv_helper.read_csv(distinct_make_model_parent_file)
 
 unique_make = set()
@@ -29,12 +31,15 @@ def read_csv_2(file_name_path):
         for row in reader:
             # Create an object from the row
             car_object = {
-                'make': row['\ufeff"make"'],
+                # 'make': row['\ufeff"make"'],
+                'make': row['make'],
                 'model': row['model'],
                 'parent_generation': row['parent_generation'],
-                'type' : row['type']
+                # 'type' : row['type']
+                'type' : row['\ufeff"type"']
             }
-            type_lookup[(row['\ufeff"make"'], row['model'])] = row['type']
+            # type_lookup[(row['\ufeff"make"'], row['model'])] = row['type']
+            type_lookup[(row['make'], row['model'])] = row['\ufeff"type"']
             data.append(car_object)
     return data
 unique_make_model_year_type = read_csv_2(distinct_make_model_parent_type_file)
@@ -143,8 +148,23 @@ def clean_wrong_brand(text):
                 .replace("WeatherGuard", "Coverland")\
                 .replace("All-Weather", "Coverland")\
                 .replace("CoverPlex", "Coverland")\
-                .replace("CoverShield Deluxe", "Coverland")\
+                .replace("CoverShield Deluxe", "Coverland")
 
+def extract_just_say_phrase(input_string):
+    phrase = "just say"
+    if phrase in input_string.lower():
+        start_index = input_string.lower().find(phrase)
+        end_index = input_string.find('.', start_index)
+        if end_index == -1:
+            end_index = len(input_string)
+
+        before_phrase = input_string[:start_index].strip()
+        after_phrase = input_string[start_index + len(phrase):end_index].strip()
+
+        return before_phrase + after_phrase + '.'
+    else:
+        return input_string
+    
 def clean_wrong_product_type_in_description(text, product_type):
     if product_type == "SUV Covers":
         replacement = "SUV"
@@ -192,7 +212,8 @@ def randomly_set_helpful(helpful, description, title):
 # Main cleaning function for description / title
 # ====================
 def clean_text(text, selected_make, selected_type, rating):
-    return randomly_delete(clean_wrong_product_type_in_description(
+    return clean_wrong_product_type_in_description(
+        extract_just_say_phrase(
         clean_wrong_brand(
         clean_waterproof_all_weather(
         clean_content_from_title(
@@ -205,7 +226,7 @@ def clean_text(text, selected_make, selected_type, rating):
         # clean_wrong_make(
         clean_truck(
         check_title_pattern(text)), #selected_make
-        ))))))))), selected_type), rating)
+        )))))))))), selected_type)
 
 # # Particular function for the description title
 # def clean_text(text, selected_make):
