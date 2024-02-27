@@ -1,35 +1,37 @@
 import csv
 import os
 
+directory_path_to_combine=os.environ.get("DIRECTORY_PATH_TO_COMBINE")
+combined_output_file=os.environ.get("COMBINED_OUTPUT_FILE")
+if directory_path_to_combine is None or combined_output_file is None:
+    print("Error: DIRECTORY_PATH_TO_COMBINE | COMBINED_OUTPUT_FILE |  environment variables are not set.")
+    exit(1)
+
 # List of CSV files to combine
-directory_path = 'csv_20240222_1353'
-csv_files = os.listdir(directory_path)
-
 # csv_files = ['file1.csv', 'file2.csv', 'file3.csv']
+csv_files = os.listdir(directory_path_to_combine)
 
-# Output combined CSV file
-output_file = 'combined_csv_20240226_1057/combined_20240226_1057.csv'
 
 # Function to combine CSV files
-def combine_csv_files(input_files, output_file):
-    with open(output_file, 'w', newline='') as outfile:
+def combine_csv_files(input_files, combined_output_file):
+    with open(combined_output_file, 'w', newline='') as outfile:
         writer = csv.writer(outfile)
         # Write the header from the first file
-        with open(f'{directory_path}/{input_files[0]}', 'r', newline='') as infile:
+        with open(f'{directory_path_to_combine}/{input_files[0]}', 'r', newline='') as infile:
             reader = csv.reader(infile)
             header = next(reader)
             writer.writerow(header)
         # Write the data from all files
         for file in input_files:
-            with open(f'{directory_path}/{file}', 'r', newline='') as infile:
+            with open(f'{directory_path_to_combine}/{file}', 'r', newline='') as infile:
                 reader = csv.reader(infile)
                 # Skip the header in additional files
-                if file != f'{directory_path}/{input_files[0]}':
+                if file != f'{directory_path_to_combine}/{input_files[0]}':
                     next(reader)
                 for row in reader:
                     writer.writerow(row)
 
 # Combine the CSV files
-combine_csv_files(csv_files, output_file)
+combine_csv_files(csv_files, combined_output_file)
 
-print(f"Combined {len(csv_files)} CSV files into {output_file}.")
+print(f"Combined {len(csv_files)} CSV files into {combined_output_file}.")
