@@ -1,5 +1,12 @@
 # GPT Reviews
 
+## Installing Stopwords
+In order to use stopwords, have to open Python interpreter
+
+```py
+import nltk
+nltk.download('stopwords')
+``` 
 
 ### Steps
 Before I forget how this works, quick instructions:
