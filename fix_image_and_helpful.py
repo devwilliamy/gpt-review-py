@@ -1,6 +1,7 @@
 import csv
 import csv_helper
 import random
+import os
 # Going to fix images 
 # Going to fix helpful range
 
@@ -49,11 +50,19 @@ truck_cover_photos = [
 'http://coverland.com/review/truck_review_012_01.webp,http://coverland.com/review/truck_review_012_02.webp,http://coverland.com/review/truck_review_012_03.webp,http://coverland.com/review/',
 'http://coverland.com/review/truck_review_005_01.webp,http://coverland.com/review/truck_review_005_02.webp,http://coverland.com/review/truck_review_005_03.webp,http://coverland.com/review/',
 ]
-file_name='data/new_id_helpful_count_20240226_1200.csv'
-# csv_data = csv_helper.read_csv(file_name)
 
-file_name2='data/Type Helpful Count Distinct 20240226_1201.csv'
-# csv_data2= csv_helper.read_csv(file_name2)
+# This has each id and its helpful count
+id_helpful_count_csv=os.environ.get("ID_HELPFUL_COUNT_INPUT")
+id_helpful_count_csv_output=os.environ.get("ID_HELPFUL_COUNT_OUTPUT")
+# This one is to see how many types have certain helpful # count
+# eg Car Covers, 35 helpful, 68 count
+type_helpful_count_csv=os.environ.get("TYPE_HELPFUL_COUNT_INPUT")
+if id_helpful_count_csv is None or type_helpful_count_csv or id_helpful_count_csv_output is None:
+    print("Error: ID_HELPFUL_COUNT_INPUT or ID_HELPFUL_COUNT_OUTPUT or TYPE_HELPFUL_COUNT_INPUT environment variables are not set.")
+    exit(1)
+
+# csv_data = csv_helper.read_csv(id_helpful_count_csv)
+# csv_data2= csv_helper.read_csv(type_helpful_count_csv)
 assigned_car_photo_index = 0
 assigned_suv_photo_index = 0
 assigned_truck_photo_index = 0
@@ -94,13 +103,13 @@ def determine_helpful(helpful, count):
 
 def fix_helpful():
     type_lookup = {}
-    with open(file_name2, 'r', newline='') as file:
+    with open(type_helpful_count_csv, 'r', newline='') as file:
         reader = csv.DictReader(file)
         # header_columns = next(reader)
         for row in reader:
             type_lookup[(row['\ufeff"type"'], row['helpful'])] = row['count']
     data = []
-    with open(file_name, 'r', newline='') as file:
+    with open(id_helpful_count_csv, 'r', newline='') as file:
         reader = csv.DictReader(file)
         header_columns = next(reader)
        
@@ -122,7 +131,7 @@ def fix_helpful():
 
 fieldnames=["id","type","helpful", "review_image"]
 new_data = fix_helpful()
-with open('fix_helpful_count/new_id_helpful_count_20240226_1202.csv', mode='w', newline='') as outfile:
+with open(id_helpful_count_csv_output, mode='w', newline='') as outfile:
     writer = csv.DictWriter(outfile, fieldnames=fieldnames)
     writer.writeheader()
     for row in new_data:
