@@ -50,5 +50,5 @@ Main.py
 - Include step for randomizing helpfulness and adding photos in an earlier step (currently it's away)
 - Need to re-incorporate critical reviews with the process so don't have to do separate step
   - Will probably need some more ternaries and stuff 
-- Make changing folder names / file names easier 
+-[x] Make changing folder names / file names easier 
 - Improve Supabase Script or extract the important parts out (GPT Reviews & Reviews-2)
